@@ -9,6 +9,11 @@ const _ENV = {
     : (() => {
         throw new Error("PORT is Required");
       })(),
+  URI: process.env.URI
+    ? process.env.URI
+    : (() => {
+        throw new Error("DB URI is Required");
+      })(),
 };
 
 export const ENV = Object.freeze(_ENV);

@@ -42,17 +42,17 @@ export class AuthRepository {
         const user = await auth.create({
           firstname,
           lastname,
-          password: this.hashedPassword(password),
+          password: await this.hashedPassword(password),
           email,
         });
         return {
-          status: 1,
+          status: 201,
           message: "User created",
           data: user._id,
         };
       }
       return {
-        status: -1,
+        status: 402,
         message: "User already exists",
         data: null,
       };
