@@ -10,7 +10,7 @@ export class AuthRepository {
     return bcrypt.compare(password, hashedpassword);
   }
 
-  private async isUserExist(email: string) {
+  public async isUserExist(email: string) {
     try {
       const isuserexist = await auth
         .findOne({
@@ -87,6 +87,28 @@ export class AuthRepository {
         status: 1,
         message: "signin user",
         data: user.data,
+      };
+    } catch (error) {
+      throw new Error(String(error));
+    }
+  }
+  public async updateUserPassword(obj: any) {
+    try {
+      const { email, password } = obj;
+      // @ts-ignore
+      await auth.findOneAndUpdate(
+        {
+          email,
+        },
+        {
+          password: await this.hashedPassword(password),
+        },
+      );
+
+      return {
+        status: 1,
+        message: "success",
+        data: null,
       };
     } catch (error) {
       throw new Error(String(error));

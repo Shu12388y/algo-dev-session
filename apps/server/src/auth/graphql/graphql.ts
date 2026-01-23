@@ -6,6 +6,8 @@ import {
   GraphQLString,
 } from "graphql";
 
+const instance = new AuthController();
+
 const userAuthType = new GraphQLObjectType({
   name: "userauth",
   fields: {
@@ -32,12 +34,17 @@ const authMutation = new GraphQLObjectType({
       type: userAuthType,
       args: {
         email: { type: GraphQLString },
+        password: { type: GraphQLString },
       },
-      resolve: (_, { email }) => {
+      resolve: async (_, { email, password }) => {
+        const user = await instance.signin({
+          email,
+          password,
+        });
         return {
-          status: 200,
-          message: "authorized",
-          data: email,
+          status: user.status,
+          message: user.message,
+          data: user.data,
         };
       },
     },
@@ -50,7 +57,7 @@ const authMutation = new GraphQLObjectType({
         password: { type: GraphQLString },
       },
       resolve: async (_, { email, firstname, lastname, password }) => {
-        const user = await new AuthController().signup({
+        const user = await instance.signup({
           email,
           firstname,
           lastname,
@@ -60,6 +67,43 @@ const authMutation = new GraphQLObjectType({
           data: user.data,
           message: user.message,
           status: user.status,
+        };
+      },
+    },
+    forgetPasswordSendToken: {
+      type: userAuthType,
+      args: {
+        email: {
+          type: GraphQLString,
+        },
+      },
+      resolve: async (_, { email }) => {
+        const user = await instance.forgetPasswordSendEmailToken({
+          email,
+        });
+        return {
+          status: user.status,
+          message: user.message,
+          data: user.data,
+        };
+      },
+    },
+
+    forgetPassword: {
+      type: userAuthType,
+      args: {
+        email: { type: GraphQLString },
+        token: { type: GraphQLString },
+      },
+      resolve: async (_, { password, token }) => {
+        const user = await instance.updatePassword({
+          password,
+          token,
+        });
+        return {
+          status: user.status,
+          message: user.message,
+          data: user.data,
         };
       },
     },
