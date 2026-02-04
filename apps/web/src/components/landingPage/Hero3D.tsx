@@ -1,7 +1,9 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Float, MeshDistortMaterial } from "@react-three/drei";
 import { useRef, Suspense, useEffect, useState } from "react";
+// @ts-ignore
 import * as THREE from "three";
+
 
 function useResponsiveScale() {
   const [scale, setScale] = useState(1);
