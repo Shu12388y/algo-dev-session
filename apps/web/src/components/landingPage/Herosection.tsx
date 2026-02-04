@@ -1,17 +1,17 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
 import { Hero3D } from "./Hero3D";
 
 export function HeroSection() {
   return (
-    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden min-h-[90vh] flex items-center">
+    <section className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden min-h-[90vh]">
       {/* 3D Background - Full on mobile, right side on desktop */}
       <div className="absolute inset-0 sm:left-auto sm:w-3/4 lg:w-1/2 h-full">
         <Hero3D />
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="max-w-3xl">
           {/* Badge */}
           <motion.div
@@ -43,7 +43,7 @@ export function HeroSection() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl mb-10"
           >
-            Practice coding problems, prepare for technical interviews, and join 
+            Practice coding problems, prepare for technical interviews, and join
             a global community of over 2 million developers.
           </motion.p>
 
@@ -77,8 +77,12 @@ export function HeroSection() {
             { value: "500+", label: "Company partners" },
           ].map((stat) => (
             <div key={stat.label}>
-              <div className="text-2xl md:text-3xl font-bold tracking-tight">{stat.value}</div>
-              <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+              <div className="text-2xl md:text-3xl font-bold tracking-tight">
+                {stat.value}
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">
+                {stat.label}
+              </div>
             </div>
           ))}
         </motion.div>
