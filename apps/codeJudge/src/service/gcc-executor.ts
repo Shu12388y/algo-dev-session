@@ -45,6 +45,14 @@ export const generateFile = ({
   return { file_path: path.join(dirCode, filename), jobID: id };
 };
 
+export const generate_input_file = (fsname: string, info: string) => {
+  const filepath = path.join(dirCode, "input", fsname);
+  fs.writeFileSync(filepath, info, {
+    encoding: "utf-8",
+  });
+  return { input_file_path: filepath };
+};
+
 export const execute_code = ({
   filepath,
   jobid,
@@ -60,9 +68,11 @@ export const execute_code = ({
         recursive: true,
       });
     }
+
+    const { input_file_path } = generate_input_file(`${jobid}.txt`, ``);
     return new Promise((reject, resolve) => {
       exec(
-        `gcc ${filepath} -o ${output_dir + "/" + out_file_name} && cd ${output_dir} && ./${out_file_name}`,
+        `gcc ${filepath} -o ${output_dir + "/" + out_file_name} && cd ${output_dir} && ./${out_file_name} < ${input_file_path}`,
         (error, stderr, stdout) => {
           if (error) {
             reject(error);
@@ -80,4 +90,3 @@ export const execute_code = ({
     throw new Error(String(error));
   }
 };
-
