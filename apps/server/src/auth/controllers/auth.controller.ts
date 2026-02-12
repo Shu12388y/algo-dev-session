@@ -90,8 +90,10 @@ export class AuthController extends AuthRepository {
           data: null,
         };
       }
-
-      const token = jwt.sign(user.data, "secret", {
+      const payload = {
+        _id :user.data._id
+      }
+      const token = jwt.sign(payload, "secret", {
         expiresIn: "24h",
       });
 

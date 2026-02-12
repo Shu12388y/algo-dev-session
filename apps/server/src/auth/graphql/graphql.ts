@@ -58,10 +58,10 @@ const authMutation = new GraphQLObjectType({
       },
       resolve: async (_, { email, firstname, lastname, password }) => {
         const user = await instance.signup({
-          email,
-          firstname,
-          lastname,
-          password,
+          email: email,
+          firstname: firstname,
+          lastname: lastname,
+          password: password,
         });
         return {
           data: user.data,

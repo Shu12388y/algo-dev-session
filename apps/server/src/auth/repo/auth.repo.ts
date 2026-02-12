@@ -16,8 +16,7 @@ export class AuthRepository {
         .findOne({
           // @ts-ignore
           email: email,
-        })
-        .select("-password");
+        });
       if (!isuserexist) {
         return {
           status: -1,

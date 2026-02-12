@@ -11,26 +11,31 @@ import { Link } from "react-router";
 import { sign_in_handler } from "../../../services/api";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../store/auth.store";
+import { useNavigate } from "react-router";
 
 export function SigninForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { error, loading } = useSelector((state: RootState) => state.auth);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       const form = new FormData(e.currentTarget);
-      const email = form.get("email");
-      const password = form.get("password");
-
+      const email = form.get("email") as string;
+      const password = form.get("password") as string;
       const user = {
         email,
         password,
       };
-      // @ts-ignore
-      await dispatch(sign_in_handler(user)).unwrap();
+      const info = await dispatch(sign_in_handler(user)).unwrap();
+      console.log(info)
+      if(info.data.sigin.status == 200){
+        navigate("/problems")
+        window.cookieStore.set("auth",info.data.sigin.data)
+      }
     } catch (error) {
       console.log(error);
     }
@@ -55,7 +60,7 @@ export function SigninForm({
         </div>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input id="email" type="email" name="email" placeholder="m@example.com" required />
         </Field>
         <Field>
           <div className="flex items-center">
@@ -67,7 +72,7 @@ export function SigninForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input id="password" type="password" name="password" required />
         </Field>
         <Field>
           <Button disabled={loading} type="submit">Login</Button>

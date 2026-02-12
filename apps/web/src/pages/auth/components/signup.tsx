@@ -11,17 +11,20 @@ import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../../store/auth.store";
 import { sign_up_handler } from "../../../services/api";
+import { useNavigate } from "react-router";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { error, loading } = useSelector((state: RootState) => state.auth);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
-    const name = form.get("name") as string;
+    const firstname = form.get("name") as string;
+    const lastname = form.get("lastname") as string;
     const email = form.get("email") as string;
     const password = form.get("password") as string;
     const confirmPassword = form.get("confirm-password") as string;
@@ -30,15 +33,16 @@ export function SignupForm({
       alert("Invalid password");
       return;
     }
-
     const user = {
-      name,
+      firstname,
+      lastname,
       email,
       password,
     };
-    // @ts-ignore
-    await dispatch(sign_up_handler(user)).unwrap();
-    e.currentTarget.reset();
+    const info = await dispatch(sign_up_handler(user)).unwrap();
+    if (info.data.signup.status == 201) {
+      navigate("/auth/signin");
+    }
   };
 
   if (error) {
@@ -58,12 +62,28 @@ export function SignupForm({
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="name">Full Name</FieldLabel>
-          <Input id="name" type="text" placeholder="John Doe" required />
+          <FieldLabel htmlFor="name">First Name</FieldLabel>
+          <Input
+            id="name"
+            type="text"
+            name="name"
+            placeholder="John"
+            required
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="lastname">Last Name</FieldLabel>
+          <Input id="lastname" type="text" name="lastname" placeholder="Doe" />
         </Field>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="m@example.com"
+            required
+          />
           <FieldDescription>
             We&apos;ll use this to contact you. We will not share your email
             with anyone else.
@@ -71,14 +91,19 @@ export function SignupForm({
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input id="password" type="password" required />
+          <Input id="password" type="password" required name="password" />
           <FieldDescription>
             Must be at least 8 characters long.
           </FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-          <Input id="confirm-password" type="password" required />
+          <Input
+            id="confirm-password"
+            type="password"
+            required
+            name="confirm-password"
+          />
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
         <Field>

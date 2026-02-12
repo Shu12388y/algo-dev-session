@@ -1,19 +1,38 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { signin_mutation, signup_mutation } from "../graphql/auth.query";
+
+const URL = "http://localhost:4000";
+
+interface User {
+  firstname: string;
+  lastname?: string;
+  email: string;
+  password: string;
+}
 
 export const sign_up_handler = createAsyncThunk(
   "signup/auth",
-  async (user, thunkAPI) => {
+  async (user: User, thunkAPI) => {
     try {
-      const response = await fetch("", {
+      const response = await fetch(`${URL}/graphql/auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({
+          query: signup_mutation,
+          variables: {
+            email: user?.email,
+            firstname: user?.firstname,
+            lastname: user?.lastname,
+            password: user?.password,
+          },
+        }),
       });
       const data = await response.json();
       return data;
     } catch (error) {
+      console.log(error);
       return thunkAPI.rejectWithValue(String(error));
     }
   },
@@ -21,18 +40,23 @@ export const sign_up_handler = createAsyncThunk(
 
 export const sign_in_handler = createAsyncThunk(
   "signin/auth",
-  async (user, thunkAPI) => {
+  async (user:Omit<User, "firstname" | "lastname">, thunkAPI) => {
     try {
-      const response = await fetch("", {
+      const response = await fetch(`${URL}/graphql/auth`, {
         method: "POST",
-        credentials:"include",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        credentials:"include",
+        body: JSON.stringify({
+          query:signin_mutation,
+          variables:{
+            email:user.email,
+            password:user.password
+          }
+        }),
       });
       const data = await response.json();
-      response.headers.set("authorization", data.token);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(String(error));
@@ -55,18 +79,17 @@ export const problems = createAsyncThunk("problems", async (_, thunkAPI) => {
   }
 });
 
-
-export const problem = createAsyncThunk("problem",async(id,thunkAPI)=>{
-    try {
-        const response = await fetch(`/${id}`,{
-            method:"GET",
-            headers:{
-                "Content-Type":"application/json",
-            }
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        return thunkAPI.rejectWithValue(String(error))
-    }
-})
+export const problem = createAsyncThunk("problem", async (id, thunkAPI) => {
+  try {
+    const response = await fetch(`/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(String(error));
+  }
+});

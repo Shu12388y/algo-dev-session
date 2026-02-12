@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router";
-
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/auth.store";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 const navItems = [
   { label: "Problems", href: "problems" },
   { label: "Contests", href: "#contests" },
@@ -12,7 +14,7 @@ const navItems = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-
+  const { is_loggedin } = useSelector((state: RootState) => state.auth);
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -40,19 +42,26 @@ export function Navbar() {
         </div>
 
         {/* Auth Buttons */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link to={"/auth/signin"}>
-            <Button variant="ghost" size="sm">
-              Sign in
-            </Button>
-          </Link>
-          <Link to={"/auth/signup"}>
-            <Button variant="default" size="sm">
-              Get started
-            </Button>
-          </Link>
-        </div>
 
+        {is_loggedin ? (
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        ) : (
+          <div className="hidden md:flex items-center gap-3">
+            <Link to={"/auth/signin"}>
+              <Button variant="ghost" size="sm">
+                Sign in
+              </Button>
+            </Link>
+            <Link to={"/auth/signup"}>
+              <Button variant="default" size="sm">
+                Get started
+              </Button>
+            </Link>
+          </div>
+        )}
         {/* Mobile Menu Toggle */}
         <button
           className="md:hidden p-2 -mr-2 text-foreground"
