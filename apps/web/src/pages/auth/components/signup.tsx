@@ -9,9 +9,10 @@ import {
 import { Input } from "../../../components/ui/input";
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../../store/auth.store";
+import type { AppDispatch, RootState } from "../../../store/index";
 import { sign_up_handler } from "../../../services/api";
 import { useNavigate } from "react-router";
+import ErrorPage from "../../../components/error/error";
 
 export function SignupForm({
   className,
@@ -46,7 +47,7 @@ export function SignupForm({
   };
 
   if (error) {
-    return <></>;
+    return <ErrorPage />;
   }
   return (
     <form

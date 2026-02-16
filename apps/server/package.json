@@ -22,6 +22,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@repo/queues": "workspace:*",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

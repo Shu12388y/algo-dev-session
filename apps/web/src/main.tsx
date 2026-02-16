@@ -4,17 +4,17 @@ import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router";
 import QueryProvider from "./providers/query-provider.tsx";
-import { auth_store } from "./store/auth.store.ts";
-import {Provider} from "react-redux"
+import { Provider } from "react-redux";
+import {store} from "./store/index.ts"
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-    <Provider store={auth_store}>
-      <QueryProvider>
-        <App />
-      </QueryProvider>
+    <Provider store={store}>
+      <BrowserRouter>
+        <QueryProvider>
+          <App />
+        </QueryProvider>
+      </BrowserRouter>
     </Provider>
-    </BrowserRouter>
   </StrictMode>,
 );

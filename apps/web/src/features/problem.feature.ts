@@ -1,11 +1,12 @@
-    import { createSlice } from "@reduxjs/toolkit";
-import { problems } from "../services/api";
+import { createSlice } from "@reduxjs/toolkit";
+import { problem, problems } from "../services/api";
 
 interface Problems {
   loading: boolean;
   error: string;
-  filterData: any[];
-  data: any[];
+  filterData: Array<object>;
+  data: Array<object>;
+  problemData: object;
 }
 
 const initialState: Problems = {
@@ -13,15 +14,16 @@ const initialState: Problems = {
   data: [],
   filterData: [],
   error: "",
+  problemData: {},
 };
 
-const problemSlice = createSlice({
+export const problemSlice = createSlice({
   name: "problems",
   initialState,
   reducers: {
     filterCatgory: (state, action) => {
       state.filterData = state.data.filter(
-        (ele) => ele?.type == action.payload?.type,
+        (ele: { type: string }) => ele?.type == action.payload?.type,
       );
     },
     resetFilter: (state) => {
@@ -41,10 +43,21 @@ const problemSlice = createSlice({
       .addCase(problems.fulfilled, (state, action) => {
         state.loading = false;
         state.error = "";
-        state.data =  action.payload;
+        state.data = action.payload;
         state.filterData = action.payload;
+      })
+      .addCase(problem.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+        state.problemData = action.payload;
+      })
+      .addCase(problem.pending, (state) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(problem.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.payload as string) ?? "Something went wrong";
       });
   },
 });
-
-export default problemSlice.reducer;

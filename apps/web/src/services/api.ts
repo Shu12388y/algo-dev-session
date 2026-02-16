@@ -40,20 +40,20 @@ export const sign_up_handler = createAsyncThunk(
 
 export const sign_in_handler = createAsyncThunk(
   "signin/auth",
-  async (user:Omit<User, "firstname" | "lastname">, thunkAPI) => {
+  async (user: Omit<User, "firstname" | "lastname">, thunkAPI) => {
     try {
       const response = await fetch(`${URL}/graphql/auth`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials:"include",
+        credentials: "include",
         body: JSON.stringify({
-          query:signin_mutation,
-          variables:{
-            email:user.email,
-            password:user.password
-          }
+          query: signin_mutation,
+          variables: {
+            email: user.email,
+            password: user.password,
+          },
         }),
       });
       const data = await response.json();
@@ -66,7 +66,7 @@ export const sign_in_handler = createAsyncThunk(
 
 export const problems = createAsyncThunk("problems", async (_, thunkAPI) => {
   try {
-    const response = await fetch("", {
+    const response = await fetch(`${URL}/question/questions`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export const problems = createAsyncThunk("problems", async (_, thunkAPI) => {
 
 export const problem = createAsyncThunk("problem", async (id, thunkAPI) => {
   try {
-    const response = await fetch(`/${id}`, {
+    const response = await fetch(`${URL}/question/question/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

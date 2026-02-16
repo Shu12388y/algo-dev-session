@@ -10,8 +10,9 @@ import { Input } from "../../../components/ui/input";
 import { Link } from "react-router";
 import { sign_in_handler } from "../../../services/api";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../../store/auth.store";
+import type { AppDispatch, RootState } from "../../../store/index";
 import { useNavigate } from "react-router";
+import ErrorPage from "../../../components/error/error";
 
 export function SigninForm({
   className,
@@ -31,10 +32,10 @@ export function SigninForm({
         password,
       };
       const info = await dispatch(sign_in_handler(user)).unwrap();
-      console.log(info)
-      if(info.data.sigin.status == 200){
-        navigate("/problems")
-        window.cookieStore.set("auth",info.data.sigin.data)
+      console.log(info);
+      if (info.data.sigin.status == 200) {
+        navigate("/problems");
+        window.cookieStore.set("auth", info.data.sigin.data);
       }
     } catch (error) {
       console.log(error);
@@ -42,7 +43,7 @@ export function SigninForm({
   };
 
   if (error) {
-    return <>Something went wrong</>;
+    return <ErrorPage />;
   }
 
   return (
@@ -60,7 +61,13 @@ export function SigninForm({
         </div>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" name="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="m@example.com"
+            required
+          />
         </Field>
         <Field>
           <div className="flex items-center">
@@ -75,7 +82,9 @@ export function SigninForm({
           <Input id="password" type="password" name="password" required />
         </Field>
         <Field>
-          <Button disabled={loading} type="submit">Login</Button>
+          <Button disabled={loading} type="submit">
+            Login
+          </Button>
         </Field>
         <Field>
           <FieldDescription className="text-center">

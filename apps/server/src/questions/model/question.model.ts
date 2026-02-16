@@ -9,6 +9,10 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type:{
+    type:String,
+    default:"easy"
+  },
   input_test_case: {
     type: String,
     required: true,
