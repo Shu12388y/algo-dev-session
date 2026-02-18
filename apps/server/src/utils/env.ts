@@ -19,6 +19,11 @@ const _ENV = {
     : (() => {
         throw new Error("REDIS URI is Required");
       })(),
+  GEMINI: process.env.GEMINI
+    ? process.env.GEMINI
+    : (() => {
+        throw new Error("REDIS URI is Required");
+      })(),
 };
 
 export const ENV = Object.freeze(_ENV);

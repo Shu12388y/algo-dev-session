@@ -88,8 +88,26 @@ export const problem = createAsyncThunk("problem", async (id, thunkAPI) => {
       },
     });
     const data = await response.json();
-    return data;
+    return data.message;
   } catch (error) {
     return thunkAPI.rejectWithValue(String(error));
   }
 });
+
+export const generateQuestion = createAsyncThunk(
+  "generatequestion",
+  async (_, thunkAPI) => {
+    try {
+      const response = await fetch(`${URL}/ai/generatequestion`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(String(error));
+    }
+  },
+);

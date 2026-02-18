@@ -9,7 +9,7 @@ const navItems = [
   { label: "Problems", href: "problems" },
   { label: "Contests", href: "#contests" },
   { label: "Discuss", href: "#discuss" },
-  { label: "Interview", href: "#interview" },
+  { label: "Interview", href: "interview" },
 ];
 
 export function Navbar() {

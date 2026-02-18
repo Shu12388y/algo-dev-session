@@ -6,6 +6,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { questionRouter } from "./questions/routes/question.routes.js";
 import { submissionRouter } from "./submission/routes/submission.routes.js";
+import { aiRouter } from "./ai/routes/ai.routes.js";
 
 export const app: Express = express();
 
@@ -28,6 +29,7 @@ app.use(
 
 app.use("/question", questionRouter);
 app.use("/submission",submissionRouter);
+app.use("/ai",aiRouter);
 
 app.get("/ruru/:service", (req, res) => {
   const service = req.params.service;
