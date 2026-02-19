@@ -12,7 +12,8 @@ import { exec } from "node:child_process";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dirCode = path.join(__dirname, "code");
+const dirCode = path.join(__dirname, "../", "code");
+const inputDirCode = path.join(__dirname, "../", "input");
 
 if (!fs.existsSync(dirCode)) {
   fs.mkdirSync(dirCode, {
@@ -20,7 +21,13 @@ if (!fs.existsSync(dirCode)) {
   });
 }
 
-export const generateFile = ({
+if (!fs.existsSync(inputDirCode)) {
+  fs.mkdirSync(inputDirCode, {
+    recursive: true,
+  });
+}
+
+export const generateFile_java = ({
   language,
   code,
 }: {
@@ -45,19 +52,45 @@ export const generateFile = ({
   return { file_path: path.join(__dirname, "code", filename), jobID: id };
 };
 
-export const execute_code = ({ filepath }: { filepath: string }) => {
+export const generate_input_file_java = (fsname: string, info: string) => {
+  const filepath = path.join(inputDirCode, fsname);
+  fs.writeFileSync(filepath, info, {
+    encoding: "utf-8",
+  });
+  return { input_file_path: filepath };
+};
+
+export const execute_code_java = ({
+  filepath,
+  jobid,
+  input,
+}: {
+  filepath: string;
+  jobid: string;
+  input: string;
+}) => {
   try {
+    const { input_file_path } = generate_input_file_java(`${jobid}.txt`, input);
     return new Promise((reject, resolve) => {
-      exec(`java ${filepath}`, (error, stderr, stdout) => {
-        if (error) {
-          reject(error);
-        }
-        if (stderr) {
-          reject(stderr);
-        }
-        if (stdout) {
-          resolve(stdout);
-        }
+      exec(`java ${filepath} < ${input_file_path}`, (error, stderr, stdout) => {
+          if (error) {
+            reject({
+              type: "error",
+              message: error.message,
+            });
+          }
+          if (stderr) {
+            reject({
+              type: "stderror",
+              message: stderr,
+            });
+          }
+          if (stdout) {
+            resolve({
+              type: "stdout",
+              message: stdout,
+            });
+          }
       });
     });
   } catch (error) {

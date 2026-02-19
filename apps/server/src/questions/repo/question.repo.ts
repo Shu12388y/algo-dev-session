@@ -57,4 +57,29 @@ export class QuestionReposistory {
       throw new Error(String(error));
     }
   }
+
+
+  /**
+   * Question
+   */
+  public async QuestionById(id: string) {
+    try {
+      // @ts-ignore
+      const info = await Questions.findById(id);
+      if (!info) {
+        return {
+          data: null,
+          message: "Not Found",
+          status: -1,
+        };
+      }
+      return {
+        data: info,
+        message: "success",
+        status: 1,
+      };
+    } catch (error) {
+      throw new Error(String(error));
+    }
+  }
 }

@@ -69,6 +69,12 @@ importers:
 
   apps/codeJudge:
     dependencies:
+      '@repo/queues':
+        specifier: workspace:*
+        version: link:../../packages/queues
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
       express:
         specifier: ^5.2.1
         version: 5.2.1

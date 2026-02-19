@@ -1,0 +1,6 @@
+apiVersions: v1
+kind: deployment
+serivces:
+  name: server
+  image: server:v1
+  

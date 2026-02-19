@@ -2,8 +2,13 @@ import { Request, Response } from "express";
 import { Queues } from "@repo/queues/queues";
 import { ENV } from "@/src/utils/env.js";
 import { SubmissionRepositary } from "../repo/submission.repository.js";
+import { QuestionReposistory } from "../../questions/repo/question.repo.js";
 
-export class SubmissionController extends SubmissionRepositary {
+
+const submissionRepositary = new SubmissionRepositary();
+const questionReposistory = new QuestionReposistory();
+
+export class SubmissionController{
   public async run(req: Request, res: Response) {
     try {
       const data = await req.body;
@@ -14,7 +19,11 @@ export class SubmissionController extends SubmissionRepositary {
           .json({ message: "Source code and language is required" });
         return;
       }
-
+      // const question_info = await questionReposistory.QuestionById(questionid);
+      // if(!question_info){
+      //   res.status(404).json({message:"Invalid question ID"})
+      //   return
+      // }
       const supported_language = ["python", "c", "cpp", "java", "javascript"];
       if (!supported_language.includes(language)) {
         res.status(404).json({ message: "langauge not supported" });
@@ -26,7 +35,7 @@ export class SubmissionController extends SubmissionRepositary {
         language,
         questionId: questionid,
       };
-      const info = await this.createSubmission(submission);
+      // const info = await submissionRepositary.createSubmission(submission);
       switch (language) {
         case "c":
           queue.add("c-route", {
@@ -40,6 +49,7 @@ export class SubmissionController extends SubmissionRepositary {
             source_code,
             language,
             questionid,
+            input:"1\n3\n2 3 5"
           });
           break;
         case "javascript":
@@ -69,7 +79,7 @@ export class SubmissionController extends SubmissionRepositary {
           break;
       }
 
-      res.status(200).json({ message: "success", data: info.data });
+      res.status(200).json({ message: "success", data: "1232" });
       return;
     } catch (error) {
       res.status(500).json({ message: String(error) });
@@ -99,7 +109,7 @@ export class SubmissionController extends SubmissionRepositary {
         language,
         questionId: questionid,
       };
-      const info = await this.createSubmission(submission);
+      const info = await submissionRepositary.createSubmission(submission);
       switch (language) {
         case "c":
           queue.add("c-route", {
@@ -154,7 +164,7 @@ export class SubmissionController extends SubmissionRepositary {
     try {
       const data = await req.body;
       const { stdOutput, stdErr, exceptedOutput, submissionid } = data;
-      await this.updateSubmission(submissionid, {
+      await submissionRepositary.updateSubmission(submissionid, {
         stdOutput,
         stdErr,
         exceptedOutput,

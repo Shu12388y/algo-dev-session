@@ -35,7 +35,7 @@ app.get("/ruru/:service", (req, res) => {
   const service = req.params.service;
   res.type("html");
   res.end(ruruHTML({ endpoint: `/graphql/${service}` }));
-});
+}); 
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Hello world" });

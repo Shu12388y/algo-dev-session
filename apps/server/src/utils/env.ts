@@ -22,7 +22,13 @@ const _ENV = {
   GEMINI: process.env.GEMINI
     ? process.env.GEMINI
     : (() => {
-        throw new Error("REDIS URI is Required");
+        throw new Error("Gemini URI is Required");
+      })(),
+
+  SECERT_HASH: process.env.SECERT_HASH
+    ? process.env.SECERT_HASH
+    : (() => {
+        throw new Error("Secret hash is Required");
       })(),
 };
 
