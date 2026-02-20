@@ -13,10 +13,10 @@ import type { AppDispatch, RootState } from "../../store/index";
 import {
   toggleTheme,
   toggleLanguage,
-} from "../../features/code_editor.feature";
+} from "../../features/code_editor.feature";  
 import { submitCode, runCode } from "../../services/api";
 import { Loader2, Sun, Moon } from "lucide-react";
-import { useState } from "react";
+import {  useState } from "react";
 
 function CodeNavBar() {
   const navigator = useNavigate();
@@ -24,6 +24,8 @@ function CodeNavBar() {
     useSelector((state: RootState) => state.codeEditor);
   const dispatch = useDispatch<AppDispatch>();
   const [types, setTypes] = useState("run");
+
+
 
   const handleSubmission = async (type: string) => {
     if (type === "run") {

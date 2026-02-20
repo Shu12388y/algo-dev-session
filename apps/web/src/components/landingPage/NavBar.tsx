@@ -1,10 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Link } from "react-router";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store/auth.store";
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "../../store/index";
+import { setAuthTokenAvailable } from "../../features/auth.feature";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../../components/ui/alert-dialog";
+
 const navItems = [
   { label: "Problems", href: "problems" },
   { label: "Contests", href: "#contests" },
@@ -14,7 +31,21 @@ const navItems = [
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { is_loggedin } = useSelector((state: RootState) => state.auth);
+  const { is_loggedin, loading } = useSelector(
+    (state: RootState) => state.auth,
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    window.cookieStore.get("auth").then((v) => {
+      if (v.value != "") {
+        dispatch(setAuthTokenAvailable(true as boolean));
+      } else {
+        dispatch(setAuthTokenAvailable(false));
+      }
+    });
+  }, []);
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -42,12 +73,37 @@ export function Navbar() {
         </div>
 
         {/* Auth Buttons */}
-
-        {is_loggedin ? (
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+        {is_loggedin && !loading ? (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="bg-transparent hover:bg-transparent">
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Are you absolutely sure to Log Out?
+                </AlertDialogTitle>
+                <AlertDialogDescription></AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-700 text-white hover:bg-red-800"
+                  onClick={() => {
+                    window.cookieStore.delete("auth");
+                    window.location.reload();
+                  }}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         ) : (
           <div className="hidden md:flex items-center gap-3">
             <Link to={"/auth/signin"}>

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { sign_up_handler, sign_in_handler } from "../services/api";
 
-export interface AuthState {
+interface AuthState {
   is_loggedin: boolean;
   error: string;
   loading: boolean;
@@ -18,7 +18,13 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setAuthTokenAvailable: (state, action) => {
+      state.loading = true;
+      state.is_loggedin = action.payload;
+      state.loading = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(sign_up_handler.pending, (state) => {
@@ -51,4 +57,5 @@ export const authSlice = createSlice({
   },
 });
 
+export const { setAuthTokenAvailable } = authSlice.actions;
 export default authSlice.reducer;
