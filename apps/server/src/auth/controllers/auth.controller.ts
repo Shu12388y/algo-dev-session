@@ -94,7 +94,7 @@ export class AuthController extends AuthRepository {
         _id :user.data._id
       }
       const token = jwt.sign(payload, "secret", {
-        expiresIn: "24h",
+        expiresIn: "7d",
       });
 
       if (!token) {

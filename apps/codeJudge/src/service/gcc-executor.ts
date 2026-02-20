@@ -71,7 +71,7 @@ export const execute_code_gcc = ({
 }) => {
   try {
     const out_file_name = jobid + "." + "out";
-    const output_dir = path.join(__dirname, "output");
+    const output_dir = path.join(__dirname, "../", "output");
     if (!fs.existsSync(output_dir)) {
       fs.mkdirSync(output_dir, {
         recursive: true,
@@ -79,10 +79,10 @@ export const execute_code_gcc = ({
     }
 
     const { input_file_path } = generate_input_file_gcc(`${jobid}.txt`, input);
-    return new Promise((reject, resolve) => {
+    return new Promise((resolve,reject) => {
       exec(
         `gcc ${filepath} -o ${output_dir + "/" + out_file_name} && cd ${output_dir} && ./${out_file_name} < ${input_file_path}`,
-        (error, stderr, stdout) => {
+        (error, stdout,stderr) => {
           if (error) {
             reject({
               type: "error",

@@ -14,11 +14,36 @@ import {
   toggleTheme,
   toggleLanguage,
 } from "../../features/code_editor.feature";
+import { submitCode, runCode } from "../../services/api";
+import { Loader2, Sun, Moon } from "lucide-react";
+import { useState } from "react";
 
 function CodeNavBar() {
   const navigator = useNavigate();
-  const { theme } = useSelector((state: RootState) => state.codeEditor);
+  const { theme, loading, code, language, questionID, code_snippet } =
+    useSelector((state: RootState) => state.codeEditor);
   const dispatch = useDispatch<AppDispatch>();
+  const [types, setTypes] = useState("run");
+
+  const handleSubmission = async (type: string) => {
+    if (type === "run") {
+      setTypes("run");
+      const obj = {
+        language,
+        source_code: code ? code : code_snippet,
+        questionId: questionID,
+      };
+      await dispatch(runCode(obj)).unwrap();
+    } else {
+      setTypes("submit");
+      const obj = {
+        language,
+        source_code: code ? code : code_snippet,
+        questionId: questionID,
+      };
+      await dispatch(submitCode(obj)).unwrap();
+    }
+  };
 
   return (
     <div className="flex flex-row w-full items-center justify-between p-4 mt-18">
@@ -29,7 +54,6 @@ function CodeNavBar() {
         <div>
           <Select
             onValueChange={(e) => {
-              console.log(e);
               dispatch(toggleLanguage(e));
             }}
           >
@@ -53,14 +77,26 @@ function CodeNavBar() {
               dispatch(toggleTheme(theme === "light" ? "vs-dark" : "light"))
             }
           >
-            Toogle Theme
+            {theme === "light" ? <Moon /> : <Sun />}
           </Button>
         </div>
         <div>
-          <Button>Run</Button>
+          {loading && types === "run" ? (
+            <div className="animate-spin">
+              <Loader2 />
+            </div>
+          ) : (
+            <Button onClick={() => handleSubmission("run")}>Run</Button>
+          )}
         </div>
         <div>
-          <Button>Submit</Button>
+          {loading && types === "submit" ? (
+            <div className="animate-spin">
+              <Loader2 />
+            </div>
+          ) : (
+            <Button onClick={() => handleSubmission("submit")}>Submit</Button>
+          )}
         </div>
       </div>
     </div>

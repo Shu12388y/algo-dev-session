@@ -18,7 +18,7 @@ const _ENV = {
   WEBHOOK_URL: process.env.WEBHOOK_URL
     ? process.env.WEBHOOK_URL
     : (() => {
-        throw new Error("Secret is required");
+        throw new Error("WebHook URL is required");
       })(),
 };
 

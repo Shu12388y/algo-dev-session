@@ -9,6 +9,10 @@ import CodeNavBar from "../../components/codenavbar/codeNavBar";
 import { useEffect } from "react";
 import { problem } from "../../services/api";
 import ErrorPage from "../../components/error/error";
+import {
+  onChangeCode,
+  handleQuestion,
+} from "../../features/code_editor.feature";
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -30,7 +34,7 @@ const markdownStyles = {
 
 function Index() {
   const { id } = useParams();
-  const { code_snippet, language, theme } = useSelector(
+  const { code_snippet, language, theme, stderr, stdout } = useSelector(
     (state: RootState) => state.codeEditor,
   );
   const { loading, error, problemData } = useSelector(
@@ -45,10 +49,16 @@ function Index() {
     }
   }, [id, dispatch]);
 
+  useEffect(() => {
+    if (problemData) {
+      //@ts-ignore
+      dispatch(handleQuestion(problemData?.data?._id as string));
+    }
+  }, [problemData, id]);
+
   if (error) {
     return <ErrorPage />;
   }
-  // console.log(problemData.data)
 
   return (
     <>
@@ -145,7 +155,7 @@ function Index() {
                   <Editor
                     height="100%"
                     language={language}
-                    // onChange={(e) => dispatch()}
+                    onChange={(e) => dispatch(onChangeCode(e))}
                     theme={theme}
                     value={code_snippet}
                     defaultValue={code_snippet}
@@ -193,7 +203,9 @@ function Index() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3">
+                    <div
+                      className={`grid ${stdout.length > 1 ? "grid-cols-2" : "grid-cols-1"} gap-3 `}
+                    >
                       <div>
                         <span className="text-blacl font-medium mb-1">
                           Expected Output
@@ -205,6 +217,36 @@ function Index() {
                             "No output provided"}
                         </pre>
                       </div>
+                      {stdout && (
+                        <div>
+                          <span className="text-blacl font-medium mb-1">
+                            Output
+                          </span>
+
+                          <pre
+                          // @ts-ignore 
+                            className={`rounded-md bg-slate-100 ${stdout === problemData?.data?.input_test_expected_output_case ? "border-2 border-green-700" : "border border-red-700"} p-3 font-mono whitespace-pre-wrap`}
+                          >
+                            {/* @ts-ignore  */}
+                            {stdout}
+                          </pre>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className={`grid grid-cols-1 gap-3`}>
+                      {stderr && (
+                        <div>
+                          <span className="text-red-400 font-medium mb-1">
+                            Error
+                          </span>
+
+                          <pre className="rounded-md bg-slate-100 border border-red-700 p-3 font-mono whitespace-pre-wrap">
+                            {/* @ts-ignore  */}
+                            {stderr}
+                          </pre>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

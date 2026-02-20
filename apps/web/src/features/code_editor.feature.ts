@@ -1,9 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { runCode, submitCode } from "../services/api";
 
 interface Editor {
   language: string;
   code_snippet: string;
   theme: string;
+  code: string;
+  loading: boolean;
+  error: string;
+  data: string;
+  questionID: string;
+  stdout:string;
+  stderr:string
 }
 
 const initialState: Editor = {
@@ -13,6 +21,13 @@ const initialState: Editor = {
 
 greet()`,
   theme: "light",
+  code: "",
+  loading: false,
+  error: "",
+  data: "",
+  questionID: "",
+  stdout:"",
+  stderr:""
 };
 
 const codeSnippets = {
@@ -60,7 +75,41 @@ export const codeEditorReducer = createSlice({
     toggleTheme: (state, action) => {
       state.theme = action.payload;
     },
+    onChangeCode: (state, action) => {
+      state.code = action.payload;
+    },
+    handleQuestion: (state, action) => {
+      state.questionID = action.payload;
+    },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(runCode.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(runCode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.error as string) || "Something went wrong";
+      })
+      .addCase(runCode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.stdout = action.payload.data.stdOutput
+        state.stderr = action.payload.data.stdErr
+      })
+      .addCase(submitCode.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(submitCode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = (action.error as string) || "Something went wrong";
+      })
+      .addCase(submitCode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      });
   },
 });
 
-export const { toggleLanguage, toggleTheme } = codeEditorReducer.actions;
+export const { toggleLanguage, toggleTheme, onChangeCode,handleQuestion } =
+  codeEditorReducer.actions;

@@ -21,7 +21,7 @@ export class SubmissionRepositary {
   public async getSubmission(id: string) {
     try {
       // @ts-ignore
-      const info = await Submission.findById(id);
+      const info = await Submission.findById(id).select("-userId");
       return {
         data: info,
         message: "success",
@@ -38,7 +38,7 @@ export class SubmissionRepositary {
       const info = await Submission.findByIdAndUpdate(id, {
         stdOutput: obj.stdOutput,
         stdErr: obj.stdErr,
-        exceptedOutput: obj.exceptedOutput,
+        status:obj.status
       });
       return {
         data: info,

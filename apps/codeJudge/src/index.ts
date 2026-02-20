@@ -12,6 +12,7 @@ import {
 import { generateFile_py, execute_code_py } from "./service/python-executor.js";
 import { ENV } from "./env.js";
 import { webhook } from "./webhook.js";
+import { language } from "./language.js";
 
 export const worker_node = async () => {
   try {
@@ -21,28 +22,50 @@ export const worker_node = async () => {
         switch (job.name) {
           case "c-route":
             const gcc_code_path = generateFile_gcc({
-              code: "",
-              language: 1,
+              code: job.data.source_code,
+              language: language[
+                job.data.language as keyof typeof language
+              ] as number,
             });
             const gcc_code_execute = execute_code_gcc({
               filepath: gcc_code_path.file_path,
-              input: "",
+              input: job.data.input,
               jobid: gcc_code_path.jobID as string,
             });
 
             gcc_code_execute
-              .then(async (data) => {
-                await webhook(ENV.WEBHOOK_URL, data, ENV.SECRET);
+              .then((data) => {
+                console.log(data);
+                const res = {
+                  id: job.data.submissionId,
+                  data: data,
+                };
+                if (data) {
+                  webhook(ENV.WEBHOOK_URL, res, ENV.SECRET).then((info) => {
+                    console.log(info);
+                  });
+                }
               })
               .catch((e) => {
+                if (e.type === "error") {
+                  const res = {
+                    id: job.data.submissionId,
+                    data: e.message,
+                  };
+                  webhook(ENV.WEBHOOK_URL, res, ENV.SECRET).then((info) => {
+                    console.log(info);
+                  });
+                }
                 console.log(e);
               });
 
             break;
           case "cpp-route":
             const c_code_path = generateFile_cpp({
-              language: 2,
               code: job.data.source_code,
+              language: language[
+                job.data.language as keyof typeof language
+              ] as number,
             });
             const c_code_execute = execute_code_cpp({
               filepath: c_code_path.file_path,
@@ -59,8 +82,10 @@ export const worker_node = async () => {
             break;
           case "js-route":
             const js_code_path = generateFile_node({
-              language: 2,
               code: job.data.source_code,
+              language: language[
+                job.data.language as keyof typeof language
+              ] as number,
             });
             const js_code_execute = execute_code_node({
               filepath: js_code_path.file_path,
@@ -78,8 +103,10 @@ export const worker_node = async () => {
 
           case "java-route":
             const java_code_path = generateFile_java({
-              language: 2,
               code: job.data.source_code,
+              language: language[
+                job.data.language as keyof typeof language
+              ] as number,
             });
             const java_code_execute = execute_code_java({
               filepath: java_code_path.file_path,
@@ -97,8 +124,10 @@ export const worker_node = async () => {
 
           case "python-route":
             const py_code_path = generateFile_py({
-              language: 2,
               code: job.data.source_code,
+              language: language[
+                job.data.language as keyof typeof language
+              ] as number,
             });
             const py_code_execute = execute_code_py({
               filepath: py_code_path.file_path,

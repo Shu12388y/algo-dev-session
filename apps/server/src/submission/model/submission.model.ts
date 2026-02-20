@@ -9,6 +9,10 @@ const submissionSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "question",
   },
+  status:{
+    type:String,
+    default:'QUEUED'
+  },
   source_code:{
     type:String,
   },

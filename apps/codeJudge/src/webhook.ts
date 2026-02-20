@@ -4,6 +4,7 @@ export const webhook = async (url: string, obj: any, key: string) => {
       method: "POST",
       body: JSON.stringify(obj),
       headers: {
+        "Content-Type": "application/json",
         "secret-key": key,
       },
     });
