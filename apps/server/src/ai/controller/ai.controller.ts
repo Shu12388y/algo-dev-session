@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { Response, Request } from "express";
-import { ENV } from "@/src/utils/env.js";
+import { ENV } from "../../utils/env.js";
 
 export class AIController {
 

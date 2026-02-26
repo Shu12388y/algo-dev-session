@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Queues } from "@repo/queues/queues";
-import { ENV } from "@/src/utils/env.js";
+import { ENV } from "../../utils/env.js";
 import { SubmissionRepositary } from "../repo/submission.repository.js";
 import { QuestionReposistory } from "../../questions/repo/question.repo.js";
 
