@@ -12,7 +12,7 @@ export const app: Express = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: ["http://localhost:5173", "http://localhost:3000","https://algo-dev-session-web.vercel.app"],
     credentials: true,
   }),
 );
