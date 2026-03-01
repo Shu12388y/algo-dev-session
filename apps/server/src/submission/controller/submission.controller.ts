@@ -3,6 +3,7 @@ import { Queues } from "@repo/queues/queues";
 import { ENV } from "../../utils/env.js";
 import { SubmissionRepositary } from "../repo/submission.repository.js";
 import { QuestionReposistory } from "../../questions/repo/question.repo.js";
+import { webhook_fn } from "../../utils/webhook.js";
 
 const submissionRepositary = new SubmissionRepositary();
 const questionReposistory = new QuestionReposistory();
@@ -48,6 +49,7 @@ export class SubmissionController {
             input: question_info?.data?.input_test_case,
             submissionId: info.data,
           });
+          await webhook_fn(ENV.WEBHOOK_URL,'GET');
           break;
         case "cpp":
           queue.add("cpp-route", {
@@ -56,6 +58,7 @@ export class SubmissionController {
             questionid,
             input: "1\n3\n2 3 5",
           });
+          await webhook_fn(ENV.WEBHOOK_URL,'GET');
           break;
         case "javascript":
           queue.add("js-route", {
@@ -63,6 +66,7 @@ export class SubmissionController {
             language,
             questionid,
           });
+          await webhook_fn(ENV.WEBHOOK_URL,'GET');
           break;
 
         case "java":
@@ -71,6 +75,7 @@ export class SubmissionController {
             language,
             questionid,
           });
+          await webhook_fn(ENV.WEBHOOK_URL,'GET');
           break;
 
         case "python":
@@ -79,6 +84,7 @@ export class SubmissionController {
             language,
             questionid,
           });
+          await webhook_fn(ENV.WEBHOOK_URL,'GET');
           break;
         default:
           break;

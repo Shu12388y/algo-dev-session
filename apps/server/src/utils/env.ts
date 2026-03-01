@@ -30,6 +30,12 @@ const _ENV = {
     : (() => {
         throw new Error("Secret hash is Required");
       })(),
+
+  WEBHOOK_URL: process.env.WEBHOOK_URL
+    ? process.env.WEBHOOK_URL
+    : (() => {
+        throw new Error("webhook is Required");
+      })(),
 };
 
 export const ENV = Object.freeze(_ENV);

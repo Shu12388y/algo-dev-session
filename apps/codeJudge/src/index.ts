@@ -13,8 +13,10 @@ import { generateFile_py, execute_code_py } from "./service/python-executor.js";
 import { ENV } from "./env.js";
 import { webhook } from "./webhook.js";
 import { language } from "./language.js";
+import express from "express";
+import cors from "cors";
 
-export const worker_node = async () => {
+const worker_node = async () => {
   try {
     Workers(
       "language-queue",
@@ -155,4 +157,23 @@ export const worker_node = async () => {
   }
 };
 
-worker_node();
+const app = express();
+
+app.use(
+  cors({
+    origin: ["*"],
+    allowedHeaders: ["GET", "POST"],
+  }),
+);
+app.get("/health", (req, res) => {
+  res.status(200).json({ message: "health" });
+});
+
+app.get("/", (req, res) => {
+  worker_node();
+  res.status(200).json({ message: "worker" });
+});
+
+app.listen(ENV.PORT, () => {
+  console.log("server is on");
+});

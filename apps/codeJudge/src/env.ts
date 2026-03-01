@@ -20,6 +20,7 @@ const _ENV = {
     : (() => {
         throw new Error("WebHook URL is required");
       })(),
+  PORT: process.env.PORT,
 };
 
 export const ENV = Object.freeze(_ENV);

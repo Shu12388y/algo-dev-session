@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { signin_mutation, signup_mutation } from "../graphql/auth.query";
 
-const URL = "http://localhost:4000";
+const URL = "https://server-latest-9xg0.onrender.com";
 
 interface User {
   firstname: string;
